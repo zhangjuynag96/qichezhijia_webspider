@@ -91,20 +91,20 @@ ITEM_PIPELINES = {
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 MYSQL_HOST = 'localhost'
-MYSQL_DATABASE = 'Autohome_koubei'
+MYSQL_DATABASE = 'autohome_koubei'
 MYSQL_PORT = 3306
-MYSQL_USER = 'root'
-MYSQL_PASSWORD = '123456'
+MYSQL_USER = 'spyder'
+MYSQL_PASSWORD = 'spyder@tbs2016'
 
 SCHEDULER = "scrapy_redis.scheduler.Scheduler"
 
 DUPEFILTER_CLASS = "scrapy_redis.dupefilter.RFPDupeFilter"
 
-REDIS_URL = 'redis://:123456@120.79.35.73:6379'
+REDIS_URL = 'redis://127.0.0.1:6379'
 
 SCHEDULER_PERSIST = True
 
-CLOSESPIDER_TIMEOUT = 36000
+CLOSESPIDER_TIMEOUT = 32400
 
 LOG_LEVEL ='INFO'
 

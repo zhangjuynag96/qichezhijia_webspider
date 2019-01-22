@@ -6,6 +6,8 @@ from scrapy import Request
 from KouBei.items import AutohomeKoubeiViewItem
 import time
 from scrapy.http import TextResponse
+import json
+import jsonpath_rw_ext
 
 class KoubeiSpider(scrapy.Spider):
     name = 'koubei'
@@ -38,17 +40,40 @@ class KoubeiSpider(scrapy.Spider):
                     yield Request(self.detail_url.format(index=index, pagecount=pagecount, sid=str(sid[0])), callback=self.get_detail)
 
     def get_detail(self,response):
-        # 正则匹配需要的信息，可继续往内添加需要的信息
-        pattern = re.compile(
-            '.*?"actual_battery_consumption":(\-\d+|\d+\.\d+).*?"actual_oil_consumption":(\-\d+|\d+\.\d+)'
-            '.*?"apperance":(\d+).*?"boughtCityName":"(.*?)".*?"bought_city":(\d+).*?"bought_date":"(.*?)"'
-            '.*?"bought_place":(\-\d+|\d+).*?"bought_province":(\d+).*?"carOwnerLevels":(\d+).*?"comfortableness":(\d+)'
-            '.*?"commentCount":(\d+).*?"consumption":(\d+).*?"cost_efficient":(\d+).*?"created":"(.*?)"'
-            '.*?"driven_kilometers":(\-\d+|\d+).*?"feeling":"(.*?)".*?"feeling_summary":"(.*?)".*?"helpfulCount":(\d+)'
-            '.*?"interior":(\d+).*?"last_edit":"(.*?)".*?"maneuverability":(\d+).*?"nickName":"(.*?)".*?"power":(\d+)'
-            '.*?"price":(\d+\.\d+).*?"seriesId":(\d+).*?"showId":"(.*?)".*?"space":(\d+).*?"specName":"(.*?)"'
-            '.*?"specid":(\d+).*?"userid":(\d+).*?"visitCount":(\d+)', re.S)
-        details = pattern.findall(response.text)
+        #使用jsonpath_rw_ext提取数据
+        html = json.loads(response.text)
+        
+        actual_battery_consumption =  jsonpath_rw_ext.match('$..actual_battery_consumption',html)
+        actual_oil_consumption = jsonpath_rw_ext.match('$..actual_oil_consumption',html)
+        apperance = jsonpath_rw_ext.match('$..apperance',html)
+        boughtCityName = jsonpath_rw_ext.match('$..boughtCityName',html)
+        bought_city = jsonpath_rw_ext.match('$..bought_city',html)
+        bought_date = jsonpath_rw_ext.match('$..bought_date',html)
+        bought_place = jsonpath_rw_ext.match('$..bought_place',html)
+        bought_province = jsonpath_rw_ext.match('$..bought_province',html)
+        carOwnerLevels = jsonpath_rw_ext.match('$..carOwnerLevels',html)
+        comfortableness = jsonpath_rw_ext.match('$..comfortableness',html)
+        commentCount = jsonpath_rw_ext.match('$..commentCount',html)
+        consumption = jsonpath_rw_ext.match('$..consumption',html)
+        cost_efficient = jsonpath_rw_ext.match('$..cost_efficient',html)
+        created = jsonpath_rw_ext.match('$..created',html)
+        driven_kilometers = jsonpath_rw_ext.match('$..driven_kilometers',html)
+        feeling = jsonpath_rw_ext.match('$..feeling',html)
+        feeling_summary = jsonpath_rw_ext.match('$..feeling_summary',html)
+        helpfulCount = jsonpath_rw_ext.match('$..helpfulCount',html)
+        interior = jsonpath_rw_ext.match('$..interior',html)
+        last_edit = jsonpath_rw_ext.match('$..last_edit',html)
+        maneuverability = jsonpath_rw_ext.match('$..maneuverability',html)
+        nickName = jsonpath_rw_ext.match('$..nickName',html)
+        power = jsonpath_rw_ext.match('$..power',html)
+        price = jsonpath_rw_ext.match('$..price',html)
+        seriesId = jsonpath_rw_ext.match('$..seriesId',html)
+        showId = jsonpath_rw_ext.match('$..showId',html)
+        space = jsonpath_rw_ext.match('$..space',html)
+        specName = jsonpath_rw_ext.match('$..specName',html)
+        specid = jsonpath_rw_ext.match('$..specid',html)
+        userid = jsonpath_rw_ext.match('$..userid',html)
+        visitCount = jsonpath_rw_ext.match('$..visitCount',html)
 
         #从其他页面获取该id车型的车型名称与所属公司
         pattern_test = re.compile('.*?rue&Id=(.*?)&')
@@ -60,46 +85,45 @@ class KoubeiSpider(scrapy.Spider):
         SeriesName = name.css('.athm-sub-nav__car__name h1::text').extract_first()
 
         # 遍历匹配到的信息，并将其存入字典
-        for result in details:
+        for i in range(0,len(nickName)):
 
             item = AutohomeKoubeiViewItem()
             # 除去文本中的换行符
-            feeling = result[15]
-            feelings = re.sub(r'\\r|\\n', '', feeling)
+            feelings = re.sub('\r+|\n+', '', str(feeling[i]))
 
-            item['actual_battery_consumption'] = result[0]
-            item['actual_oil_consumption'] = result[1]
-            item['apperance'] = result[2]
-            item['boughtCityName'] = result[3]
-            item['bought_city'] = result[4]
-            item['bought_date'] = result[5]
-            item['bought_place'] = result[6]
-            item['bought_province'] = result[7]
-            item['carOwnerLevels'] = result[8]
-            item['comfortableness'] = result[9]
-            item['commentCount'] = result[10]
-            item['consumption'] = result[11]
-            item['cost_efficient'] = result[12]
-            item['created'] = result[13]
-            item['driven_kilometers'] = result[14]
+            item['actual_battery_consumption'] = str(actual_battery_consumption[i])
+            item['actual_oil_consumption'] = str(actual_oil_consumption[i])
+            item['apperance'] = str(apperance[i])
+            item['boughtcityname'] = str(boughtCityName[i])
+            item['bought_city'] = str(bought_city[i])
+            item['bought_date'] = str(bought_date[i])
+            item['bought_place'] = str(bought_place[i])
+            item['bought_province'] = str(bought_province[i])
+            item['carownerlevels'] = str(carOwnerLevels[i])
+            item['comfortableness'] = str(comfortableness[i])
+            item['commentcount'] = str(commentCount[i])
+            item['consumption'] = str(consumption[i])
+            item['cost_efficient'] = str(cost_efficient[i])
+            item['created'] = str(created[i])
+            item['driven_kilometers'] = str(driven_kilometers[i])
             item['feeling'] = feelings
-            item['feeling_summary'] = result[16]
-            item['helpfulCount'] = result[17]
-            item['interior'] = result[18]
-            item['last_edit'] = result[19]
-            item['maneuverability'] = result[20]
-            item['nickName'] = result[21]
-            item['power'] = result[22]
-            item['price'] = result[23]
-            item['seriesId'] = result[24]
-            item['showId'] = result[25]
-            item['space'] = result[26]
-            item['specName'] = result[27]
-            item['specid'] = result[28]
-            item['userid'] = result[29]
-            item['visitCount'] = result[30]
-            item['BrandName'] = BrandName
-            item['SeriesName'] = SeriesName
+            item['feeling_summary'] = str(feeling_summary[i])
+            item['helpfulcount'] = str(helpfulCount[i])
+            item['interior'] = str(interior[i])
+            item['last_edit'] = str(last_edit[i])
+            item['maneuverability'] = str(maneuverability[i])
+            item['nickname'] = str(nickName[i])
+            item['power'] = str(power[i])
+            item['price'] = str(price[i])
+            item['seriesid'] = str(seriesId[i])
+            item['showid'] = str(showId[i])
+            item['space'] = str(space[i])
+            item['specname'] = str(specName[i])
+            item['specid'] = str(specid[i])
+            item['userid'] = str(userid[i])
+            item['visitcount'] = str(visitCount[i])
+            item['brandname'] = BrandName
+            item['seriesname'] = SeriesName
 
             yield item
 
