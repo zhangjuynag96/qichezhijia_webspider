@@ -8,6 +8,7 @@ import time
 from scrapy.http import TextResponse
 import json
 import jsonpath_rw_ext
+import datetime
 
 class KoubeiSpider(scrapy.Spider):
     name = 'koubei'
@@ -91,39 +92,42 @@ class KoubeiSpider(scrapy.Spider):
             # 除去文本中的换行符
             feelings = re.sub('\r+|\n+', '', str(feeling[i]))
 
-            item['actual_battery_consumption'] = str(actual_battery_consumption[i])
-            item['actual_oil_consumption'] = str(actual_oil_consumption[i])
+            item['energy_consump'] = str(actual_battery_consumption[i])
+            item['gas_consump'] = str(actual_oil_consumption[i])
             item['apperance'] = str(apperance[i])
-            item['boughtcityname'] = str(boughtCityName[i])
+            item['bought_city_name'] = str(boughtCityName[i])
             item['bought_city'] = str(bought_city[i])
             item['bought_date'] = str(bought_date[i])
             item['bought_place'] = str(bought_place[i])
             item['bought_province'] = str(bought_province[i])
-            item['carownerlevels'] = str(carOwnerLevels[i])
-            item['comfortableness'] = str(comfortableness[i])
-            item['commentcount'] = str(commentCount[i])
-            item['consumption'] = str(consumption[i])
-            item['cost_efficient'] = str(cost_efficient[i])
-            item['created'] = str(created[i])
-            item['driven_kilometers'] = str(driven_kilometers[i])
-            item['feeling'] = feelings
-            item['feeling_summary'] = str(feeling_summary[i])
-            item['helpfulcount'] = str(helpfulCount[i])
+            item['car_owner_levels'] = str(carOwnerLevels[i])
+            item['comfort'] = str(comfortableness[i])
+            item['comment_count'] = str(commentCount[i])
+            item['economy'] = str(consumption[i])
+            item['cost_efficiency'] = str(cost_efficient[i])
+            item['post_at'] = str(created[i])
+            item['odometer'] = str(driven_kilometers[i])
+            item['content'] = feelings
+            item['summary'] = str(feeling_summary[i])
+            item['helpful_count'] = str(helpfulCount[i])
             item['interior'] = str(interior[i])
-            item['last_edit'] = str(last_edit[i])
-            item['maneuverability'] = str(maneuverability[i])
-            item['nickname'] = str(nickName[i])
+            item['modified_at'] = str(last_edit[i])
+            item['maneuver'] = str(maneuverability[i])
+            item['nick_name'] = str(nickName[i])
             item['power'] = str(power[i])
             item['price'] = str(price[i])
-            item['seriesid'] = str(seriesId[i])
-            item['showid'] = str(showId[i])
+            item['series_id'] = str(seriesId[i])
+            item['show_id'] = str(showId[i])
             item['space'] = str(space[i])
-            item['specname'] = str(specName[i])
-            item['specid'] = str(specid[i])
-            item['userid'] = str(userid[i])
-            item['visitcount'] = str(visitCount[i])
-            item['brandname'] = BrandName
-            item['seriesname'] = SeriesName
+            item['spec'] = str(specName[i])
+            item['spec_id'] = str(specid[i])
+            item['user_id'] = str(userid[i])
+            item['visit_count'] = str(visitCount[i])
+            item['brand'] = BrandName
+            item['series'] = SeriesName
+            item['created_at'] = datetime.datetime.now()
+            item['updated_at'] = datetime.datetime.now()
+            item['content_id'] = 0
 
             yield item
 
