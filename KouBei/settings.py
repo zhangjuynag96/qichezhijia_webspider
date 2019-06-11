@@ -94,7 +94,7 @@ MYSQL_HOST = 'localhost'
 MYSQL_DATABASE = 'autohome_koubei'
 MYSQL_PORT = 3306
 MYSQL_USER = 'spyder'
-MYSQL_PASSWORD = 'spyder@tbs2016'
+MYSQL_PASSWORD = 'password'
 
 SCHEDULER = "scrapy_redis.scheduler.Scheduler"
 
